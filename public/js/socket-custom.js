@@ -22,7 +22,8 @@ socket.on('disconnect', function() {
 });
 
 socket.emit('entrarAlChat', usuario, function(resp){
-    console.log('Usuarios conectados ', resp);
+    /* console.log('Usuarios conectados ', resp); */
+    renderizarUsuario(resp);
 })
 
 socket.on('usuarioMessageDesconnection', function(data){
@@ -31,10 +32,12 @@ socket.on('usuarioMessageDesconnection', function(data){
 
 socket.on('crearMensaje', function(resp){
     console.log(resp);
+    renderizarMensaje(resp);
+    scrollBottom()
 });
 
 socket.on('listaPersonas', function(data){
-    console.log(data);
+    renderizarUsuario(data);
 });
 
 /* socket.emit('mensajePrivado', function(data){

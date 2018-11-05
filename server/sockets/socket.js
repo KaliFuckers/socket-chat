@@ -18,18 +18,18 @@ io.on('connection', (client) => {
         const personas = usuario.agregarPersona(client.id, data.nombre, data.sala);
         client.broadcast.to(data.sala).emit('listaPersonas', usuario.getPersonasPorSalas(data.sala))
         callback(usuario.getPersonasPorSalas(data.sala));
+        client.broadcast.to(data.sala).emit('crearMensaje', crearMensaje('Admin', `${data.nombre} se unió l chat`));
     });
 
-    client.on('crearMensaje', (data) => {
+    client.on('crearMensaje', (data, callback) => {
         const persona = usuario.getPersona(client.id);
-        console.log(persona);
         const mensaje = crearMensaje(persona.nombre, data.mensaje);
+        callback(mensaje);
         client.broadcast.to(persona.sala).emit('crearMensaje', mensaje);
     });
 
     client.on('disconnect', () => {
         const personaBorrada = usuario.borrarPersona(client.id);
-        console.log(personaBorrada);
         client.broadcast.to(personaBorrada.sala).emit('crearMensaje', crearMensaje('Admin', `${personaBorrada.nombre} abandonó el chat`));
         client.broadcast.to(personaBorrada.sala).emit('listaPersonas', usuario.getPersonasPorSalas(personaBorrada.sala));
     });
